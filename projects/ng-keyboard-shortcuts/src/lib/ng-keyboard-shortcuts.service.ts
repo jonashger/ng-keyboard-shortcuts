@@ -416,17 +416,17 @@ export class KeyboardShortcutsService implements OnDestroy {
     private parseCommand(command: ShortcutInput | ShortcutInput[]): ParsedShortcut[] {
         const commands = Array.isArray(command) ? command : [command];
         return commands.map(command => {
-            const keys = Array.isArray(command.key) ? command.key : [command.key];
+            const keys = (Array.isArray(command.key) ? command.key : [command.key]).filter(key => !!key);
             const priority = Math.max(...keys.map(key => key.split(" ").filter(identity).length));
             const predicates = keys.map(key => this.getKeys(key.split(" ").filter(identity)));
             const isSequence = this.isSequence(keys);
             const sequence = isSequence
                 ? keys.map(key =>
-                      key
-                          .split(" ")
-                          .filter(identity)
-                          .map(key => key.trim())
-                  )
+                    key
+                        .split(" ")
+                        .filter(identity)
+                        .map(key => key.trim())
+                )
                 : [];
             return {
                 ...command,
